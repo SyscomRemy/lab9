@@ -1,0 +1,72 @@
+CR lab9
+
+1)
+cp ../lab7/examen/max.c max.c
+cp ../lab7/examen/max.h max.h
+cp ../lab7/examen/min.c min.c
+cp ../lab7/examen/min.h min.h
+cp ../lab7/examen/variance.c variance.c
+cp ../lab7/examen/variance.h variance.h
+cp ../lab7/examen/test.c main.c
+
+2)
+gcc -c -fPIC max.c
+gcc -c -fPIC min.c
+gcc -c -fPIC variance.c
+
+3)
+gcc -shared -o library.so *.o
+
+4)
+mv library.so /opt/lib
+
+5)
+gcc main.c -L /opt/lib -I /opt/include -lrary -o main.exe
+
+6)
+./main.exe (le programme ne s'exécute pas car il ne sais pas ou est la library)
+
+./main.exe: error while loading shared libraries: library.so: cannot open shared object file: No such file or directory
+
+7)
+echo $LD_LIBRARY_PATH (Cette variable d'environement est vide)
+
+8)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/lib
+
+(Par défaut quand on exécute le programme il cherche les library dans le répertoire par defaut /usr/lib et dans LD_LIBRARY_PATH donc on ajoutant le chemin vers notre library dynamique dans cette variable d'environnement il va là trouver)
+Pour pouvoir retrouver ce chemin de manière permanante il faut rajouter cette mê
+me commande dans le premier fichier qui se lance au démarrage d'un terminale .ba
+shrc.
+
+./main.exe (il s'exécute bien)
+11)
+locate libm.so
+/usr/lib/x86_64-linux-gnu/libm.so
+
+12)
+soname = libm.so.6 
+nom réel = libm.so
+
+13)
+mv /opt/lib/library.so /usr/lib
+chmod -w /usr/lib/library.so
+
+14)
+ldconfig = chargeur de bibliothèques partagées
+sudo ldconfig (Cette opération permet de régénérer le cache de l'éditeur de lien dynamique car on a modifé le fichier library.so donc il doit le prendre en comte pour les futurs usages de la bibliothèque).
+
+15)
+ldconfig -p | grep library.so (l'option p permet de lire le cache de de l'affichier, grâce au pipe on retrouve la présence de notre bibliothèque dans le cche donc la mise à jour s'est correctement effectuée). 
+
+16)
+ldd /usr/lib/library.so (indique que la bibliothèque est liée statiquement)
+
+17)unset $LD_LIBRARY_PATH 
+
+18)gcc main.c -I /opt/include -lrary -o main.exe
+
+19)
+./main.exe (le programme s'exécute bien).
+
+
